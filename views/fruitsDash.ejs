@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/dash.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+    <%- include('sidebar.ejs') %>
+
+<!-- Page Content -->
+<div id="content">
+  <!-- Navbar -->
+    <%- include('navbar.ejs') %>
+
+  <!-- Main Content -->
+  <div class="container-fluid">
+    <h2 class="mt-4">Add Fruits</h2>
+    <form id="fruitForm" style="width:40%;margin-left:0vw;">
+        <div class="form-group">
+            <label for="fruit">Fruit Name:</label>
+            <input type="text" class="form-control" id="fruitName" name="fruitName" required>
+        </div>
+        <div class="form-group">
+            <label for="fruitPrice">Fruit Price:</label>
+            <input type="text" class="form-control" id="fruitPrice" name="fruitPrice" required>
+        </div>
+        <div class="form-group">
+            <label for="fruitQuantity">Fruit Quantity:</label>
+            <input type="number" class="form-control" id="fruitQuantity" name="fruitQuantity" required>
+        </div>
+        <div class="form-group">
+            <label for="fruitDescription">Fruit Description:</label>
+            <input type="text" class="form-control" id="fruitDescription" name="fruitDescription" required>
+        </div>  
+        <div class="form-group">
+          <label for="fruitCategory">Fruit Category:</label>
+            <select class="form-control" id="fruitCategory" name="fruitCategory"></select> 
+        </div>
+        <div class="form-group mb-2">
+            <label for="fruitNutrionalInformation">Fruit Nutritional Information:</label>
+            <input type="text" class="form-control" id="fruitNutrionalInformation" name="fruitNutrionalInformation" required>
+        </div>
+        <div class="form-group mb-2">
+            <label for="fruitImage">Fruit Image:</label>
+            <input type="file" class="form-control" id="fruitImage" name="fruitImage" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Fruit</button>
+    </form>
+  </div>
+  <table class="table mt-3">
+    <thead>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Quantity
+      <th>Description</th>
+      <th>Category</th>
+      <th>Nutritional Information</th>
+      <th>Image</th>
+      <th>Action</th>
+    </thead>
+    <tbody id="productTbody"></tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <!-- Edit Product Form -->
+          <form id="edit-product-form">
+              <div class="form-group">
+                <label for="editProductName">Product Name:</label>
+                <input type="text" class="form-control" id="editProductName" name="editProductName" required>
+              </div>
+              <div class="form-group">
+                  <label for="editProductPrice">Product Price:</label>
+                  <input type="text" class="form-control" id="editProductPrice" name="editProductPrice" required>
+              </div>
+              <div class="form-group">
+                  <label for="perServing">Per Serving:</label>
+                  <input type="number" class="form-control" id="editPerServing" name="perServing" required>
+              </div>
+              <div class="form-group">
+                  <label for="editProductDescription">Product Description:</label>
+                  <input type="text" class="form-control" id="editProductDescription" name="editProductDescription" required>
+              </div>  
+              <div class="form-group">
+                <label for="editProductCategory">Category:</label>
+                  <select name="editProductCategory" class="form-control" id="editProductCategory"></select> 
+              </div>
+              <div class="form-group">
+                  <label for="editProductImage">Product Image:</label>
+                  <input type="file" class="form-control" id="editProductImage" name="editProductImage"><br>
+                  <img src="" alt="" width="70" height="70" id="storedImage">
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="editSaveBtn">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const productForm=document.getElementById('product-form');
+  const tbody=document.getElementById('productTbody');
+  
+  const addProduct=async(e)=>{
+    e.preventDefault();
+    const formData=new FormData(productForm);
+    try{
+      const response=await fetch(`http://localhost:2000/product`,{
+        method:'POST',
+        body:formData,
+      });
+    }catch(err){
+      console.log(err.message);
+    }
+  };
+  productForm.addEventListener('submit',addProduct);
+
+  const getProducts=async()=>{
+    try{
+      const response=await fetch(`http://localhost:2000/product`);
+      const products=await response.json();
+
+      products.forEach(async (product)=>{
+        console.log(product);
+        const tr=document.createElement('tr');
+        const productNameCell=document.createElement('td');
+        const productPriceCell=document.createElement('td');
+        const productQuantityCell=document.createElement('td');
+        const productCategoryCell=document.createElement('td');
+        const productDescriptionCell=document.createElement('td');
+        const productImageCell=document.createElement('td');
+
+        productNameCell.textContent=product.productName;
+        productPriceCell.textContent=product.productPrice;
+        productQuantityCell.textContent=product.productQuantity;
+        const categoryResponse=await getCategories();
+        const categoryData=await categoryResponse.json();
+        
+        productCategoryCell.textContent=product.productCategory;
+        productDescriptionCell.textContent=product.productDescription;
+        const image=document.createElement('img');
+        image.style.width='80px';
+        image.style.height='80px';
+        image.src=`http://localhost:2000/images/${product.productImage}`;
+        productImageCell.appendChild(image);
+        
+        tr.appendChild(productNameCell);
+        tr.appendChild(productPriceCell);
+        tr.appendChild(productQuantityCell);
+        tr.appendChild(productDescriptionCell);
+        tr.appendChild(productCategoryCell);
+        tr.appendChild(productImageCell);
+
+        tbody.appendChild(tr);
+      });
+    }catch(err){
+      console.log(err.message);
+    }
+  }
+  getProducts();
+
+  const getCategories=async()=>{
+    try{
+      const response=await fetch(`http://localhost:2000/category`);
+      return response;
+    }catch(err){
+      console.log(err.message);
+    }
+  }
+
+  const productCategorySelect=document.getElementById('productCategory');
+  const selectCategoriesShow=async()=>{
+    try{
+      const categoriesResponse=await getCategories();
+      const categories=await categoriesResponse.json();
+      categories.forEach((category)=>{
+        const categoryOption=document.createElement('option');
+        categoryOption.value=category._id;
+        categoryOption.textContent=category.categoryName;
+        productCategorySelect.appendChild(categoryOption);
+      });
+    }catch(err){
+      console.log(err.message);
+    }
+  }
+  selectCategoriesShow();
+</script>
+
+</body>
+</html>
