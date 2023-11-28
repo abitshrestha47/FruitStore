@@ -4,6 +4,9 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { connectDB } from './config/db.js';
 import { authRouter } from './routes/authRoutes.js';
+import { fruitRouter } from './routes/fruitRoutes.js';
+import { dashboardRouter } from './routes/dashboardRoutes.js';
+import { categoryRouter } from './routes/categoryRoutes.js';
 const app=express();
 
 connectDB();
@@ -21,6 +24,9 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname,'public')));
 
 app.use('/',authRouter);
+app.use('/',fruitRouter);
+app.use('/',dashboardRouter);
+app.use('/',categoryRouter);
 
 app.use((err,req,res,next)=>{
     res.status(err.status || 500).json({

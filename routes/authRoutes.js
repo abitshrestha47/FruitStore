@@ -13,7 +13,3 @@ authRouter.get('/login',(req,res)=>{
 });
 
 authRouter.post('/login',authenticateUser);
-
-authRouter.get('/dash',(req,res)=>{
-    res.render('fruitsDash.ejs');
-})
