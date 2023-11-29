@@ -19,11 +19,7 @@ const fruitSchema=new mongoose.Schema({
     },
     fruitCategory:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'categories',
-        required:true,
-    },
-    fruitNutrionalInformation:{
-        type:String,
+        ref:'Category',
         required:true,
     },
     fruitImage:{
@@ -32,4 +28,4 @@ const fruitSchema=new mongoose.Schema({
     },
 });
 
-export const User=mongoose.model('User',userSchema);
+export const Fruit=mongoose.model('Fruit',fruitSchema);
