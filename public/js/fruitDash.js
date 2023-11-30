@@ -113,6 +113,7 @@ const fruitDescriptionEdit=document.getElementById('editFruitDescription');
 const fruitCategoryEdit=document.getElementById('editFruitCategory');
 const fruitImageEdit=document.getElementById('editFruitImage');
 const fruitImageDisplay=document.getElementById('dbStoredImage');
+const editSaveBtn=document.getElementById('editSaveBtn');
 
 const editFruit=async(e)=>{
     e.preventDefault();
@@ -122,17 +123,101 @@ const editFruit=async(e)=>{
     const fruitPrice=tr.querySelector('td:nth-child(2)').textContent;
     const fruitQuantity=tr.querySelector('td:nth-child(3)').textContent;
     const fruitDescription=tr.querySelector('td:nth-child(4)').textContent;
-    const fruitCategory=tr.querySelector('td:nth-child(5)').textContent;
+    const fruitCategory=tr.querySelector('td:nth-child(5)').textContent;    
     const fruitImage=tr.querySelector('td:nth-child(6) img').src;
+
+    const initialData={
+        fruitName:fruitName,
+        fruitPrice:fruitPrice,
+        fruitQuantity:fruitQuantity,
+        fruitDescription:fruitDescription,
+        fruitCategory:fruitCategory,
+        fruitImage:fruitImage,
+    }
 
     fruitNameEdit.value=fruitName;
     fruitPriceEdit.value=fruitPrice;
     fruitQuantityEdit.value=fruitQuantity;
     fruitDescriptionEdit.value=fruitDescription;
-    fruitCategoryEdit.value=fruitCategory;
+    
+    const categoryValues=await getCategory();
+    categoryValues.forEach((category)=>{
+        const editCategoryOption=document.createElement('option');
+        editCategoryOption.value=category._id;
+        editCategoryOption.textContent=category.categoryName;
+        if(category.categoryName===fruitCategory){
+            editCategoryOption.selected=true;
+        }
+        fruitCategoryEdit.appendChild(editCategoryOption);
+    });
     fruitImageDisplay.src=fruitImage;
+
+    fruitImageEdit.addEventListener('change',(e)=>{
+        const selectedFile=e.target.files[0];
+        if(selectedFile){
+            const objectURL=URL.createObjectURL(selectedFile);
+            fruitImageDisplay.src=objectURL;
+        }else{
+            fruitImageDisplay.src=fruitImage;
+        }
+    })
+
+    editSaveBtn.addEventListener('click',async(e)=>{
+        e.preventDefault();
+        const selectedCategoryOption = fruitCategoryEdit.options[fruitCategoryEdit.selectedIndex];
+        const fruitCategory = selectedCategoryOption ? selectedCategoryOption.textContent : '';
+        const updatedData={
+            fruitName:fruitNameEdit.value,
+            fruitPrice:fruitPriceEdit.value,
+            fruitQuantity:fruitQuantityEdit.value,
+            fruitDescription:fruitDescriptionEdit.value,
+            fruitCategory:fruitCategory,
+            fruitImage:fruitImageDisplay.src,
+        }
+        const editFruitData=new FormData();
+        for(const field in updatedData){
+            if(updatedData[field]!==initialData[field]){
+                if(field==='fruitName'){
+                    editFruitData.append('fruitName',updatedData[field]);
+                }else if(field==='fruitPrice'){
+                    editFruitData.append('fruitPrice',updatedData[field]);
+                }
+                else if(field==='fruitQuantity'){
+                    editFruitData.append('fruitQuantity',updatedData[field]);
+                }else if(field==='fruitDescription'){
+                    editFruitData.append('fruitDescription',updatedData[field]);
+                }else if(field==='fruitCategory'){
+                    editFruitData.append('fruitCategory',fruitCategoryEdit.value);
+                }else if(field==='fruitImage'){
+                    editFruitData.append('fruitImage',fruitImageEdit.files[0]);
+                }
+            }
+        }
+        // for(const entry of editFruitData.entries()){
+        //     console.log(entry);
+        // }
+
+        try{
+            const response=await fetch(`http://localhost:9000/fruits/${fruitId}`,{
+                method:'PATCH',
+                body:editFruitData,
+            });
+            if(response.status===204){
+            }
+        }catch(err){
+            console.error(err.message);
+        }
+    });
 }
 
 const deleteFruit=async(e)=>{
-
+    e.preventDefault();
+    const fruitId=e.target.getAttribute('data-fruit-id');
+    try{
+        const response=await fetch(`http://localhost:9000/fruits/${fruitId}`,{
+            method:'DELETE',
+        });
+    }catch(err){
+        console.error(err.message);
+    }
 }

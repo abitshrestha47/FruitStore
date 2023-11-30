@@ -7,6 +7,7 @@ import { authRouter } from './routes/authRoutes.js';
 import { fruitRouter } from './routes/fruitRoutes.js';
 import { dashboardRouter } from './routes/dashboardRoutes.js';
 import { categoryRouter } from './routes/categoryRoutes.js';
+import { userRouter } from './routes/userRoutes.js';
 const app=express();
 
 connectDB();
@@ -27,6 +28,7 @@ app.use('/',authRouter);
 app.use('/',fruitRouter);
 app.use('/',dashboardRouter);
 app.use('/',categoryRouter);
+app.use('/',userRouter);
 
 app.use((err,req,res,next)=>{
     res.status(err.status || 500).json({
