@@ -27,7 +27,7 @@ const submitForm=async(e)=>{
         }else if(response.status===400){
             error.textContent=responseData.error.message;
         }else if(response.ok){
-            console.log(responseData);
+            window.location.href='/';
         }
     }catch(err){    
         console.log(err.message);

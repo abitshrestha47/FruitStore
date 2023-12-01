@@ -14,6 +14,21 @@ const getFruits=async(id)=>{
     }
 }
 
+const isFruitPresent=async(fruitId)=>{
+    try {
+        if(fruitId){
+            const response=await fetch(`http://localhost:9000/carts/${fruitId}`);
+            if(response.status===404){
+                return false;
+            }else if(response.status===200){
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
 const fruitContainer=document.getElementById('fruitContainer');
 const addFruitsToPage=async()=>{
     const fruitData=await getFruits();
@@ -43,14 +58,20 @@ const addToCartHandler=async (id,fruitData)=>{
     const fruitPrice=fruitData.fruitPrice;
     const cartTotal=fruitPrice.replace(/perKg/g,'');
     try{
-        const response=await fetch(`http://localhost:9000/carts`,{
-            method:'POST',
-            body:JSON.stringify({
-                'fruitId':id,
-                'cartTotal':cartTotal,
-            }),
-            headers:{'Content-Type':'application/json'},
-        });
+        const fruitInCart=await isFruitPresent(id);
+        if(fruitInCart){
+            alert('This fruit is already in your cart. You can update the quantity in the cart.');
+        }
+        else{
+            const response=await fetch(`http://localhost:9000/carts`,{
+                method:'POST',
+                body:JSON.stringify({
+                    'fruitId':id,
+                    'cartTotal':cartTotal,
+                }),
+                headers:{'Content-Type':'application/json'},
+            });
+        }
     }catch(err){
         console.log(err.message);
     }

@@ -34,3 +34,16 @@ export const authenticateUser=async(req,res,next)=>{
         console.error(err.message);
     }
 }
+
+// export const getUser=async(req,res,next)=>{
+//     const id=req.params.id;
+//     try{
+//         if(id){
+//             const user=await User.findById({id});
+//             if(!user) return next(createError(404,'User not found!'));
+//             res.status(200).json(user);
+//         }
+//     }catch(err){
+//         console.error(err.message);
+//     }
+// }

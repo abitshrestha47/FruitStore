@@ -31,6 +31,8 @@ const submitForm=async(e)=>{
             const responseData=await response.json();
             if(response.status===409){
                 error.textContent=responseData.error.message;
+            }else if(response.status===200){
+                window.location.href='/login';
             }
         }catch(err){
             console.log(err.message);

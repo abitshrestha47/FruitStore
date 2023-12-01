@@ -1,5 +1,6 @@
 import { Cart } from "../models/Cart.js";
 import { decodeToken } from "../utils/jwtUtils.js";
+import { createError } from "../utils/error.js";
 
 export const addToCart=async (req,res,next)=>{
     const token=req.cookies.access_token;
@@ -19,15 +20,22 @@ export const addToCart=async (req,res,next)=>{
 export const getCarts=async(req,res,next)=>{
     const token=req.cookies.access_token;
     const decoded_Token=await decodeToken(token,process.env.JWT);
+    const fruitId=req.params.id;
     const userId=decoded_Token.id;
         try{
-            if(userId){
-                const cart=await Cart.find({userId:userId});
-                if(!cart) return next(createError(404,'Fruit not found!'));
+            if(fruitId){
+                const cart=await Cart.findOne({userId,fruitId});
+                if(!cart) return next(createError(404,'Cart not found!'));
                 res.status(200).json(cart);            
             }else{
-                const carts=await Cart.find({});
-                res.status(200).json(carts);     
+                if(userId){
+                    const cart=await Cart.find({userId:userId});
+                    if(!cart) return next(createError(404,'Cart not found!'));
+                    res.status(200).json(cart);            
+                }else{
+                    const carts=await Cart.find({});
+                    res.status(200).json(carts);     
+                }
             }
         }catch(err){
             console.error(err.message);
