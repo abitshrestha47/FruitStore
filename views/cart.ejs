@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>My Cart</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">My Shop</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Cart</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2>Your Cart</h2>
+
+    <!-- Cart Table -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="cartTbody">
+            <!-- Example Cart Item -->
+            <!-- <tr>
+                <td><img src="/path/to/fruit/image.jpg" alt="Fruit" style="max-width: 50px;"></td>
+                <td>Fruit Name</td>
+                <td>Description of the fruit.</td>
+                <td><button onclick="decreaseQuantity(this)">-</button><span id="quantity">2</span><button onclick="increaseQuantity(this)">+</button></td>
+                <td>Rs. 240</td>
+                <td><button class="btn btn-danger">Remove</button></td>
+            </tr> -->
+            <!-- End Example Cart Item -->
+
+            <!-- Repeat the above row structure for each item in the cart -->
+            <!-- You can use a loop in your template engine to dynamically generate cart items -->
+        </tbody>
+    </table>
+    <!-- End Cart Table -->
+
+    <!-- Total Price -->
+    <div class="mt-4">
+        <h4 id="overallTotal"></h4>
+    </div>
+    <div class="updateCart">
+        <button type="submit" class="btn btn-primary" id="updateCart">Update</button>
+    </div>
+    <!-- End Total Price -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/js/cart.js"></script>
+
+</body>
+</html>

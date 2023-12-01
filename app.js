@@ -8,6 +8,8 @@ import { fruitRouter } from './routes/fruitRoutes.js';
 import { dashboardRouter } from './routes/dashboardRoutes.js';
 import { categoryRouter } from './routes/categoryRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
+import { cartRouter } from './routes/cartRoutes.js';
+import cookieParser from 'cookie-parser';
 const app=express();
 
 connectDB();
@@ -23,12 +25,14 @@ app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname,'public')));
+app.use(cookieParser());
 
 app.use('/',authRouter);
 app.use('/',fruitRouter);
 app.use('/',dashboardRouter);
 app.use('/',categoryRouter);
 app.use('/',userRouter);
+app.use('/',cartRouter);
 
 app.use((err,req,res,next)=>{
     res.status(err.status || 500).json({
